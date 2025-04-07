@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uber Clone - Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .dashboard-bg {
+            background-color: #f8f9fa;
+        }
+        .profile-card {
+            background: linear-gradient(135deg, #00a677 0%, #00c476 100%);
+        }
+    </style>
+</head>
+<body class="dashboard-bg">
+    <!-- Header -->
+    <header class="bg-black text-white p-4 flex justify-between items-center">
+        <div class="flex items-center">
+            <span class="text-2xl font-bold text-white">UBER</span>
+            <nav class="hidden md:flex ml-10">
+                <a href="/dashboard" class="mx-3 hover:text-gray-300">Home</a>
+                <a href="/rides" class="mx-3 hover:text-gray-300">Rides</a>
+                <a href="/history" class="mx-3 hover:text-gray-300">History</a>
+            </nav>
+        </div>
+        <div class="flex items-center">
+            <button id="logoutBtn" class="bg-white text-black px-4 py-2 rounded hover:bg-gray-200">Log out</button>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Profile Card -->
+            <div class="profile-card text-white p-6 rounded-lg shadow-lg col-span-1">
+                <div class="flex items-center mb-4">
+                    <div class="w-16 h-16 rounded-full bg-white flex items-center justify-center mr-4">
+                        <i class="fas fa-user text-3xl text-emerald-600"></i>
+                    </div>
+                    <div>
+                        <h2 id="userName" class="text-xl font-bold">John Doe</h2>
+                        <p id="userEmail" class="text-sm">john@example.com</p>
+                    </div>
+                </div>
+                <div class="flex justify-between text-sm mb-2">
+                    <span>Phone:</span>
+                    <span id="userPhone">+1 234 567 890</span>
+                </div>
+                <div class="flex justify-between text-sm">
+                    <span>Member since:</span>
+                    <span id="joinDate">Jan 2023</span>
+                </div>
+            </div>
+
+            <!-- Ride Options -->
+            <div class="bg-white p-6 rounded-lg shadow-lg col-span-2">
+                <h2 class="text-xl font-bold mb-4">Where would you like to go?</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Pickup Location</label>
+                        <input type="text" id="pickup" placeholder="Enter pickup address"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-emerald-500 focus:border-emerald-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Destination</label>
+                        <input type="text" id="destination" placeholder="Enter destination"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-emerald-500 focus:border-emerald-500">
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Choose vehicle type</label>
+                    <div class="grid grid-cols-3 gap-3">
+                        <button class="vehicle-type p-3 border rounded-md hover:border-emerald-500 hover:bg-emerald-50">
+                            <i class="fas fa-car text-2xl mb-2 text-gray-700"></i>
+                            <p class="text-sm">UberX</p>
+                        </button>
+                        <button class="vehicle-type p-3 border rounded-md hover:border-emerald-500 hover:bg-emerald-50">
+                            <i class="fas fa-car text-2xl mb-2 text-gray-700"></i>
+                            <p class="text-sm">UberXL</p>
+                        </button>
+                        <button class="vehicle-type p-3 border rounded-md hover:border-emerald-500 hover:bg-emerald-50">
+                            <i class="fas fa-car text-2xl mb-2 text-gray-700"></i>
+                            <p class="text-sm">Uber Black</p>
+                        </button>
+                    </div>
+                </div>
+
+                <button id="requestRideBtn" class="w-full bg-emerald-600 text-white py-3 rounded-md hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500">
+                    Request Ride
+                </button>
+            </div>
+        </div>
+
+        <!-- Ride History -->
+        <div class="bg-white p-6 rounded-lg shadow-lg mt-8">
+            <h2 class="text-xl font-bold mb-4">Recent Rides</h2>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">From</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">To</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fare</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Today, 10:30 AM</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">123 Main St
