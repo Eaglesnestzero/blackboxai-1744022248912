@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uber Clone - Track Your Ride</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places"></script>
+    <style>
+        #map {
+            height: 400px;
+            width: 100%;
+        }
+        .driver-marker {
+            background-image: url('https://cdn-icons-png.flaticon.com/512/2583/2583344.png');
+            background-size: cover;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body class="font-sans">
+    <header class="bg-black text-white p-4 flex justify-between items-center">
+        <div class="flex items-center">
+            <span class="text-2xl font-bold">UBER</span>
+        </div>
+        <div class="flex items-center">
+            <a href="/dashboard" class="bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded mr-2">Dashboard</a>
+            <button id="logout" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded">Log out</button>
+        </div>
+    </header>
+
+    <main class="p-4">
+        <div class="max-w-4xl mx-auto">
+            <h1 class="text-2xl font-bold mb-4">Track Your Ride</h1>
+            
+            <div class="bg-white rounded-lg shadow-lg p-4 mb-4">
+                <div id="map"></div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-lg p-4">
+                <div class="flex justify-between items-center mb-4">
+                    <div>
+                        <h2 class="text-xl font-bold">Driver: John Doe</h2>
+                        <p class="text-gray-600">Toyota Camry - ABC123</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-2xl font-bold text-emerald-600">4.8 ★</p>
+                        <p class="text-gray-600">Rating</p>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <div class="flex justify-between mb-1">
+                        <span class="text-sm font-medium text-gray-700">Estimated arrival</span>
+                        <span class="text-sm font-medium text-gray-700">8 min</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                        <div class="bg-emerald-600 h-2.5 rounded-full" style="width: 45%"></div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <button class="bg-gray-200 hover:bg-gray-300 p-3 rounded-lg">
+                        <i class="fas fa-phone-alt text-emerald-600 mr-2"></i>
+                        <span>Call Driver</span>
+                    </button>
+                    <button class="bg-gray-200 hover:bg-gray-300 p-3 rounded-lg">
+                        <i class="fas fa-comment-alt text-emerald-600 mr-2"></i>
+                        <span>Message</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Initialize map
+        let map;
+        let driverMarker;
+        let driverPosition = { lat: 37.7749, lng: -122.4194 }; // Initial position (San Francisco)
+        let userPosition = { lat: 37.7750, lng: -122.4184 }; // User position
+
+        function initMap() {
+            map = new google.maps.Map(document.getElementById("map"), {
+                zoom: 15,
+                center: userPosition,
+                styles: [
+                    {
+                        featureType: "poi",
+                        elementType: "labels",
+                        stylers: [{ visibility: "off" }]
+                    }
+                ]
+            });
+
+            // Add user marker
+            new google.maps.Marker({
+                position: userPosition,
+                map: map,
+                icon: {
+                    url: "https://maps.google.com/mapfiles/ms/icons/blue-dot.png"
+                },
+                title: "Your Location"
+            });
+
+            // Add driver marker
+            driverMarker = new google.maps.Marker({
+                position: driverPosition,
+                map: map,
+                icon: {
+                    url: "https://cdn-icons-png.flaticon.com/512/2583/2583344.png",
+                    scaledSize: new google.maps.Size(40, 40)
+                },
+                title: "Your Driver"
+            });
+
+            // Connect to Socket.io for real-time updates
+            const socket = io();
+            
+            socket.on('locationUpdate', (data) => {
+                const newPosition = {
+                    lat: data.location.latitude,
+                    lng: data.location.longitude
+                };
+                
+                // Update driver position
+                driverMarker.setPosition(newPosition);
+                
+                // Center map between user and driver
+                const bounds = new google.maps.LatLngBounds();
+                bounds.extend(userPosition);
+                bounds.extend(newPosition);
+                map.fitBounds(bounds);
+            });
+        }
+
+        // Logout functionality
+        document.getElementById('logout').addEventListener('click', () => {
+            localStorage.removeItem('token');
+            window.location.href = '/login';
+        });
+
+        // Initialize map when window loads
+        window.initMap = initMap;
+    </script>
+</body>
+</html>
